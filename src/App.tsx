@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { AudioRecorder, AudioStreamer } from "./lib/audio";
 import { motion } from "motion/react";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const apiKey = process.env.GEMINI_API_KEY;
+console.log("GEMINI_API_KEY present:", !!apiKey, "length:", apiKey?.length);
+const ai = new GoogleGenAI({ apiKey });
 
 const getAdditionalLanguage = () => {
   const val = (import.meta as any).env.VITE_ADDITIONAL_LANGUAGE;
@@ -342,11 +344,12 @@ export default function App() {
               }
             }
           },
-          onclose: () => {
+          onclose: (e: any) => {
+            console.error("Live API WebSocket closed:", e?.code, e?.reason, e);
             disconnect();
           },
-          onerror: (err) => {
-            console.error("Live API Error:", err);
+          onerror: (err: any) => {
+            console.error("Live API Error:", err?.message || err);
             disconnect();
           }
         }
