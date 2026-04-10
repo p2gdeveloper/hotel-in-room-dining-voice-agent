@@ -1,0 +1,7 @@
+{
+  "name": "Hotel In-room Dining Voice Agent",
+  "description": "Voice agent for ordering in-room dining at Fraser Suites Doha.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
