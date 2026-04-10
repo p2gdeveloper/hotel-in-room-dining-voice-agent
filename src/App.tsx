@@ -19,8 +19,8 @@ export const CONFIG = {
   hotelName: (import.meta as any).env.VITE_HOTEL_NAME || "Fraser Suites Doha",
   greeting: (import.meta as any).env.VITE_GREETING || "Fraser Suites in-room dining, would you like to continue in English or Arabic?",
   additionalLanguage: getAdditionalLanguage(),
-  menuWorksheetName: (import.meta as any).env.VITE_MENU_WORKSHEET_NAME || "Menu",
-  ordersWorksheetName: (import.meta as any).env.VITE_ORDERS_WORKSHEET_NAME || "Orders",
+  menuWorksheetName: ((import.meta as any).env.VITE_MENU_WORKSHEET_NAME || "Menu").trim(),
+  ordersWorksheetName: ((import.meta as any).env.VITE_ORDERS_WORKSHEET_NAME || "Orders").trim(),
   voiceName: ((import.meta as any).env.VITE_VOICE_NAME || "Zephyr").trim(),
 };
 
@@ -124,13 +124,16 @@ export default function App() {
   useEffect(() => {
     // Fetch the menu from the Google Sheet webhook on load
     const fetchMenu = async () => {
-      const webhookUrl = (import.meta as any).env.VITE_GOOGLE_SHEETS_WEBHOOK_URL;
+      const webhookUrl = ((import.meta as any).env.VITE_GOOGLE_SHEETS_WEBHOOK_URL || "").trim();
+      console.log("Webhook URL present:", !!webhookUrl, "length:", webhookUrl?.length);
       if (!webhookUrl) {
+        console.log("No webhook URL configured, using default menu");
         setIsLoadingMenu(false);
         return;
       }
-      
+
       try {
+        console.log("Fetching menu from Google Sheets...");
         const response = await fetch(webhookUrl, {
           method: "POST",
           headers: {
@@ -139,7 +142,8 @@ export default function App() {
           body: JSON.stringify({ action: "get_menu", sheetName: CONFIG.menuWorksheetName }),
         });
         const data = await response.json();
-        
+        console.log("Google Sheets response:", data);
+
         if (data.status === "success" && data.menu) {
           // Format the menu data into a readable string for the AI
           let formattedMenu = `${CONFIG.hotelName} In-room Dining Menu (Live from Google Sheets)\n\n`;
