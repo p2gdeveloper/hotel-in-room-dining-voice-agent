@@ -21,7 +21,7 @@ export const CONFIG = {
   additionalLanguage: getAdditionalLanguage(),
   menuWorksheetName: (import.meta as any).env.VITE_MENU_WORKSHEET_NAME || "Menu",
   ordersWorksheetName: (import.meta as any).env.VITE_ORDERS_WORKSHEET_NAME || "Orders",
-  voiceName: (import.meta as any).env.VITE_VOICE_NAME || "Zephyr",
+  voiceName: ((import.meta as any).env.VITE_VOICE_NAME || "Zephyr").trim(),
 };
 
 const MENU = `
